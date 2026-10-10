@@ -1,6 +1,9 @@
 # Vitalis AI — Your Personal Health Copilot
 ### Master Build for ByteXL AI Tools Hackathon (Altrix Labs Challenge)
 
+**Live judge demo:** [Open Vitalis AI](https://vitalis-ai-judges-2026-files-v2.vercel.app/)
+
+
 > **"Upload any medical document. Understand it in your language, at your level. Ask anything. Walk into the doctor's office prepared."**
 
 Vitalis AI is an end-to-end, fully functional personal health companion built for elderly individuals, children (via guardians), caregivers, chronic condition patients, and everyday users. It replaces scattered papers with a unified, verified health timeline backed by real OCR, deterministic clinical rule validation, and a multi-provider LLM gateway.
