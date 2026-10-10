@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd frontend && npm ci --no-audit --no-fund && VITE_PUBLIC_DEMO=true npm run build",
+  "functions": {
+    "index.py": {
+      "maxDuration": 60
+    }
+  }
+}

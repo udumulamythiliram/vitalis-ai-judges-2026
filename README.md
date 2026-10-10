@@ -207,4 +207,3 @@ Judges can explore the complete application using the 4 built-in clinical person
 | **Theme Studio & WCAG Guard**| **Real** | 12 presets with live relative luminance contrast calculation and AAA compliance guard. |
 | **FHIR R4 Export** | **Real** | Valid HL7 FHIR Bundle generated with Patient, Observation, and MedicationRequest resources. |
 | **ABHA Linking** | **Simulated / Mock** | Clearly labeled synthetic ABHA link for demonstration without requiring government sandbox credentials. |
-
