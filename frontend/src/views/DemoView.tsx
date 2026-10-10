@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PatientProfile } from '../types';
 import { api } from '../api';
 import { SectionId } from '../components/Sidebar';
+import { useLanguage } from '../i18n';
 import {
   Award,
   Users,
@@ -32,49 +33,50 @@ export const DemoView: React.FC<DemoViewProps> = ({
   onNavigate,
   onRefreshData,
 }) => {
+  const { t } = useLanguage();
   const [resetting, setResetting] = useState(false);
   const [resetMsg, setResetMsg] = useState<string | null>(null);
 
   const personas = [
     {
       id: 'p_elderly_ramachandra',
-      title: '1. Elderly Patient with Multiple Prescriptions',
+      titleKey: 'demo.persona1',
       name: 'Ramachandra Rao (72 Y / M)',
       icon: Heart,
-      tag: 'Elderly Care & Polypharmacy',
-      description: 'Prescription with Metformin, Telmisartan & Atorvastatin. Elevated Fasting Blood Sugar (138 mg/dL) & HbA1c (7.4%). Demonstrates large text and time-labeled medication schedules.',
+      tagKey: 'demo.tag1',
+      descriptionKey: 'demo.desc1',
       actionSection: 'medications' as SectionId,
-      actionLabel: 'Inspect Prescriptions'
+      actionKey: 'demo.inspectMeds'
     },
     {
       id: 'p_child_aarav',
-      title: "2. Parent with Child's Records",
+      titleKey: 'demo.persona2',
       name: 'Aarav Sharma (18 Months / M)',
       icon: Baby,
-      tag: 'Guardian Scoped',
-      description: 'Pediatric MMR and DTP Booster records administered at Rainbow Children\'s Hospital. Demonstrates guardian permissions and child-safe chatbot answers.',
+      tagKey: 'demo.tag2',
+      descriptionKey: 'demo.desc2',
       actionSection: 'timeline' as SectionId,
-      actionLabel: 'Inspect Child Chart'
+      actionKey: 'demo.inspectChild'
     },
     {
       id: 'p_adult_vikram',
-      title: '3. Adult Comparing Two Lab Reports',
+      titleKey: 'demo.persona3',
       name: 'Vikram Patel (45 Y / M)',
       icon: TrendingUp,
-      tag: 'Delta Tracking & Trends',
-      description: 'Baseline vs follow-up metabolic panel across 3 months showing FBS reduction from 132 to 112 mg/dL. Demonstrates multi-report comparison deltas.',
+      tagKey: 'demo.tag3',
+      descriptionKey: 'demo.desc3',
       actionSection: 'reports' as SectionId,
-      actionLabel: 'View Report Deltas'
+      actionKey: 'demo.inspectTrends'
     },
     {
       id: 'p_accessible_lakshmi',
-      title: '4. Accessibility & Regional Language',
+      titleKey: 'demo.persona4',
       name: 'Lakshmi Devi (68 Y / F)',
       icon: Sliders,
-      tag: 'High Contrast & Telugu (తెలుగు)',
-      description: 'Cardiology consultation notes with Telugu and Hindi plain-language synthesis, high-contrast palette, and screen reader markup.',
+      tagKey: 'demo.tag4',
+      descriptionKey: 'demo.desc4',
       actionSection: 'copilot' as SectionId,
-      actionLabel: 'Ask in Telugu / Hindi'
+      actionKey: 'demo.askLanguage'
     }
   ];
 
@@ -82,7 +84,7 @@ export const DemoView: React.FC<DemoViewProps> = ({
     setResetting(true);
     try {
       await api.resetDemo();
-      setResetMsg('Demo database reset to clean state with 4 judge personas!');
+      setResetMsg(t('demo.resetDone'));
       onRefreshData();
       setTimeout(() => setResetMsg(null), 3000);
     } catch (err: any) {
@@ -99,11 +101,11 @@ export const DemoView: React.FC<DemoViewProps> = ({
         <div>
           <div className="flex items-center space-x-2 text-primary text-xs font-bold uppercase tracking-wider mb-1">
             <Award className="w-4 h-4" />
-            <span>ByteXL AI Tools Hackathon • Altrix Labs Challenge</span>
+            <span>{t('demo.eyebrow')}</span>
           </div>
-          <h2 className="text-2xl font-extrabold text-text">Judge Demonstration Suite</h2>
+          <h2 className="text-2xl font-extrabold text-text">{t('demo.title')}</h2>
           <p className="text-text-muted text-sm mt-1">
-            Select any of the 4 pre-configured clinical personas to evaluate end-to-end workflows without manual data entry.
+            {t('demo.desc')}
           </p>
         </div>
 
@@ -113,7 +115,7 @@ export const DemoView: React.FC<DemoViewProps> = ({
           className="px-4 py-2.5 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs flex items-center space-x-2 border border-border transition-all"
         >
           <RotateCcw className={`w-4 h-4 ${resetting ? 'animate-spin' : ''}`} />
-          <span>{resetting ? 'Resetting...' : 'Reset Demo Data'}</span>
+          <span>{resetting ? t('demo.resetting') : t('demo.reset')}</span>
         </button>
       </div>
 
@@ -142,11 +144,11 @@ export const DemoView: React.FC<DemoViewProps> = ({
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">
-                    {persona.tag}
+                    {t(persona.tagKey)}
                   </span>
                   {isCurrentActive && (
                     <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded border border-emerald-300">
-                      Currently Active Profile
+                      {t('demo.active')}
                     </span>
                   )}
                 </div>
@@ -156,12 +158,12 @@ export const DemoView: React.FC<DemoViewProps> = ({
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-base text-text">{persona.title}</h3>
+                    <h3 className="font-extrabold text-base text-text">{t(persona.titleKey)}</h3>
                     <div className="text-xs text-text-muted font-semibold">{persona.name}</div>
                   </div>
                 </div>
 
-                <p className="text-xs text-text-muted leading-relaxed mt-2">{persona.description}</p>
+                <p className="text-xs text-text-muted leading-relaxed mt-2">{t(persona.descriptionKey)}</p>
               </div>
 
               <div className="mt-5 pt-3 border-t border-border flex items-center justify-between gap-3">
@@ -174,7 +176,7 @@ export const DemoView: React.FC<DemoViewProps> = ({
                       : 'bg-surface-2 hover:bg-border text-text border border-border'
                   }`}
                 >
-                  {isCurrentActive ? 'Active in Header' : 'Activate Persona'}
+                  {isCurrentActive ? t('demo.active') : t('demo.activate')}
                 </button>
 
                 <button
@@ -184,7 +186,7 @@ export const DemoView: React.FC<DemoViewProps> = ({
                   }}
                   className="flex-1 py-2 px-3 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs flex items-center justify-center space-x-1 shadow-sm"
                 >
-                  <span>{persona.actionLabel}</span>
+                  <span>{t(persona.actionKey)}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -197,28 +199,28 @@ export const DemoView: React.FC<DemoViewProps> = ({
       <div className="bg-surface rounded-theme p-5 border border-border shadow-theme">
         <h3 className="font-bold text-base text-text mb-3 flex items-center space-x-2">
           <Play className="w-5 h-5 text-primary" />
-          <span>Recommended 3-Minute Judging Walkthrough</span>
+          <span>{t('demo.walkthrough')}</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <div className="p-3 bg-surface-2 rounded-theme border border-border">
-            <div className="font-bold text-text mb-1">Step 1: Upload & Review</div>
+            <div className="font-bold text-text mb-1">{t('demo.step1')}</div>
             <p className="text-text-muted">
-              Select <strong>Health Records</strong> → Upload a medical document or click <strong>Review Center</strong> to see real side-by-side OCR and deterministic flags.
+              {t('demo.step1desc')}
             </p>
           </div>
 
           <div className="p-3 bg-surface-2 rounded-theme border border-border">
-            <div className="font-bold text-text mb-1">Step 2: Scoped Copilot & Citations</div>
+            <div className="font-bold text-text mb-1">{t('demo.step2')}</div>
             <p className="text-text-muted">
-              Open <strong>Vitalis Copilot</strong> → Ask "Explain my latest blood test" or "Explain in Telugu". See clickable source chips linking directly to records.
+              {t('demo.step2desc')}
             </p>
           </div>
 
           <div className="p-3 bg-surface-2 rounded-theme border border-border">
-            <div className="font-bold text-text mb-1">Step 3: Themes & FHIR Export</div>
+            <div className="font-bold text-text mb-1">{t('demo.step3')}</div>
             <p className="text-text-muted">
-              Open <strong>Theme Studio</strong> to see live WCAG contrast guarding, toggle <strong>Elderly Mode</strong>, and export an HL7 FHIR R4 Bundle under <strong>Privacy</strong>.
+              {t('demo.step3desc')}
             </p>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PatientProfile, Appointment } from '../types';
 import { api } from '../api';
+import { useLanguage, translateStaticText } from '../i18n';
 import {
   Calendar,
   Plus,
@@ -18,6 +19,7 @@ interface AppointmentsViewProps {
 }
 
 export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatient }) => {
+  const { t, language } = useLanguage();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [prepSheet, setPrepSheet] = useState<any>(null);
@@ -82,10 +84,10 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
         <div>
           <h2 className="text-xl font-bold text-text flex items-center space-x-2">
             <Calendar className="w-5 h-5 text-primary" />
-            <span>Doctor Appointments & AI Visit Prep</span>
+            <span>{t('appointments.title')}</span>
           </h2>
           <p className="text-xs text-text-muted mt-0.5">
-            Organize upcoming consultations and synthesize one-page briefing sheets for {activePatient?.full_name}.
+            {t('appointments.desc', { name: activePatient?.full_name || '' })}
           </p>
         </div>
 
@@ -94,22 +96,22 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
           className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs flex items-center space-x-1.5 shadow-sm"
         >
           <Plus className="w-4 h-4" />
-          <span>Schedule Visit</span>
+          <span>{t('appointments.schedule')}</span>
         </button>
       </div>
 
       {/* Appointments List */}
       <div className="bg-surface rounded-theme border border-border overflow-hidden shadow-theme">
         <div className="p-4 bg-surface-2 border-b border-border">
-          <h3 className="font-bold text-text text-base">Scheduled Doctor Visits</h3>
+          <h3 className="font-bold text-text text-base">{t('appointments.list')}</h3>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-text-muted">Loading appointments...</div>
+          <div className="p-8 text-center text-text-muted">{t('appointments.loading')}</div>
         ) : appointments.length === 0 ? (
           <div className="p-12 text-center text-text-muted">
             <Calendar className="w-10 h-10 mx-auto mb-2 opacity-30" />
-            <p>No appointments scheduled yet for this patient.</p>
+            <p>{t('appointments.empty')}</p>
           </div>
         ) : (
           <div className="divide-y divide-border">
@@ -133,11 +135,11 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
                     </span>
                     <span className="flex items-center space-x-1 font-mono">
                       <Clock className="w-4 h-4 text-text-muted" />
-                      <span>{new Date(a.appointment_time).toLocaleString()}</span>
+                      <span>{new Date(a.appointment_time).toLocaleString(language)}</span>
                     </span>
                   </div>
 
-                  {a.notes && <p className="text-xs text-text mt-2">Notes: {a.notes}</p>}
+                  {a.notes && <p className="text-xs text-text mt-2">{translateStaticText("Notes:")} {a.notes}</p>}
                 </div>
 
                 <button
@@ -146,7 +148,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
                   className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs flex items-center space-x-1.5 shadow-sm transition-all whitespace-nowrap"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>Prepare Visit Sheet</span>
+                  <span>{translateStaticText("Prepare Visit Sheet")}</span>
                 </button>
               </div>
             ))}
@@ -160,13 +162,13 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
           <div className="flex items-center justify-between pb-4 border-b border-border">
             <div>
               <div className="text-xs font-bold text-primary uppercase tracking-wider">
-                Doctor Consultation Briefing Sheet
+                {translateStaticText("Doctor Consultation Briefing Sheet")}
               </div>
               <h3 className="font-extrabold text-xl text-text">
-                Prepared for {prepSheet.appointment?.clinician_name}
+                {translateStaticText("Prepared for")} {prepSheet.appointment?.clinician_name}
               </h3>
               <p className="text-xs text-text-muted">
-                Patient: {activePatient?.full_name} • Date: {new Date(prepSheet.appointment?.appointment_time).toLocaleDateString()}
+                {translateStaticText("Patient:")} {activePatient?.full_name} {translateStaticText("• Date:")} {new Date(prepSheet.appointment?.appointment_time).toLocaleDateString(language)}
               </p>
             </div>
 
@@ -175,7 +177,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
               className="px-3 py-1.5 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs flex items-center space-x-1.5 border border-border"
             >
               <Printer className="w-4 h-4" />
-              <span>Print / Save PDF</span>
+              <span>{translateStaticText("Print / Save PDF")}</span>
             </button>
           </div>
 
@@ -184,7 +186,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
             <div className="p-4 rounded-theme bg-surface-2 border border-border">
               <h4 className="font-bold text-text mb-2 flex items-center space-x-1.5">
                 <FileText className="w-4 h-4 text-primary" />
-                <span>Verified Active Medications</span>
+                <span>{translateStaticText("Verified Active Medications")}</span>
               </h4>
               <ul className="list-disc pl-5 space-y-1 text-xs">
                 {prepSheet.active_medications?.map((m: any, i: number) => (
@@ -197,11 +199,11 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
 
             {/* Abnormal findings */}
             <div className="p-4 rounded-theme bg-amber-50 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-800 text-amber-950 dark:text-amber-100">
-              <h4 className="font-bold mb-2">Recent Values Outside Lab Range</h4>
+              <h4 className="font-bold mb-2">{translateStaticText("Recent Values Outside Lab Range")}</h4>
               <ul className="list-disc pl-5 space-y-1 text-xs">
                 {prepSheet.abnormal_findings?.map((o: any, i: number) => (
                   <li key={i}>
-                    <strong>{o.test_name}</strong>: {o.value} {o.unit} (Printed Ref: {o.reference_range}) on {o.collection_date}
+                    <strong>{o.test_name}</strong>: {o.value} {o.unit} {translateStaticText("(Printed Ref:")} {o.reference_range}{translateStaticText(") on")} {o.collection_date}
                   </li>
                 ))}
               </ul>
@@ -209,7 +211,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
 
             {/* Suggested Doctor Questions */}
             <div className="p-4 rounded-theme bg-surface-2 border border-border">
-              <h4 className="font-bold text-text mb-2">Key Questions to Ask During Consultation</h4>
+              <h4 className="font-bold text-text mb-2">{translateStaticText("Key Questions to Ask During Consultation")}</h4>
               <ul className="list-decimal pl-5 space-y-1.5 text-xs text-text">
                 {prepSheet.questions_for_doctor?.map((q: string, i: number) => (
                   <li key={i}>{q}</li>
@@ -224,15 +226,15 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-surface rounded-theme border border-border shadow-2xl p-6 max-w-md w-full animate-in zoom-in-95">
-            <h3 className="font-bold text-lg text-text">Schedule Doctor Visit</h3>
-            <p className="text-xs text-text-muted mt-0.5">For {activePatient?.full_name}</p>
+            <h3 className="font-bold text-lg text-text">{translateStaticText("Schedule Doctor Visit")}</h3>
+            <p className="text-xs text-text-muted mt-0.5">{translateStaticText("For")} {activePatient?.full_name}</p>
 
             <div className="mt-4 space-y-3">
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Clinician / Doctor Name *</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Clinician / Doctor Name *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Dr. K. V. Reddy, Cardiologist"
+                  placeholder={translateStaticText("e.g. Dr. K. V. Reddy, Cardiologist")}
                   value={clinician}
                   onChange={(e) => setClinician(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -240,10 +242,10 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Hospital / Facility</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Hospital / Facility")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Apollo Hospitals, Jubilee Hills"
+                  placeholder={translateStaticText("e.g. Apollo Hospitals, Jubilee Hills")}
                   value={facility}
                   onChange={(e) => setFacility(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -251,7 +253,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Date & Time</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Date & Time")}</label>
                 <input
                   type="datetime-local"
                   value={time}
@@ -261,10 +263,10 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Reason / Notes</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Reason / Notes")}</label>
                 <textarea
                   rows={2}
-                  placeholder="e.g. Routine blood pressure check & lab review"
+                  placeholder={translateStaticText("e.g. Routine blood pressure check & lab review")}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -277,13 +279,13 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({ activePatien
                 onClick={() => setShowAddModal(false)}
                 className="px-4 py-2 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs"
               >
-                Cancel
+                {translateStaticText("Cancel")}
               </button>
               <button
                 onClick={handleCreateAppointment}
                 className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs"
               >
-                Schedule Appointment
+                {translateStaticText("Schedule Appointment")}
               </button>
             </div>
           </div>

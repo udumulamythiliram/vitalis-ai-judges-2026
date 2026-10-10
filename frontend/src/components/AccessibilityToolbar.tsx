@@ -1,3 +1,4 @@
+import { translateStaticText, useLanguage } from "../i18n";
 import React from 'react';
 import { CustomThemeSettings, applyTheme } from '../theme/themeEngine';
 import {
@@ -27,6 +28,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
   settings,
   onUpdateSettings,
 }) => {
+  useLanguage();
   if (!isOpen) return null;
 
   const handleFontChange = (delta: number) => {
@@ -61,18 +63,18 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
   return (
     <div
       role="dialog"
-      aria-label="Accessibility Settings"
+      aria-label={translateStaticText("Accessibility Settings")}
       className="fixed inset-y-0 right-0 w-80 sm:w-96 bg-surface border-l border-border shadow-2xl z-50 p-6 overflow-y-auto animate-in slide-in-from-right duration-200"
     >
       <div className="flex items-center justify-between pb-4 border-b border-border mb-6">
         <div className="flex items-center space-x-2">
           <Sliders className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-bold text-text">Accessibility Hub</h2>
+          <h2 className="text-lg font-bold text-text">{translateStaticText("Accessibility Hub")}</h2>
         </div>
         <button
           onClick={onClose}
           className="p-1 rounded hover:bg-surface-2 text-text-muted hover:text-text"
-          aria-label="Close accessibility toolbar"
+          aria-label={translateStaticText("Close accessibility toolbar")}
         >
           <X className="w-5 h-5" />
         </button>
@@ -84,7 +86,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-2">
               <HeartHandshake className="w-5 h-5 text-primary" />
-              <div className="font-bold text-text">Elderly Care Mode</div>
+              <div className="font-bold text-text">{translateStaticText("Elderly Care Mode")}</div>
             </div>
             <input
               type="checkbox"
@@ -95,7 +97,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
             />
           </div>
           <label htmlFor="toggle-elderly" className="text-xs text-text-muted block mt-2 cursor-pointer">
-            Enlarges typography to 20px+, expands touch targets to 56px, simplifies navigation to 5 essentials, and pins emergency actions.
+            {translateStaticText("Enlarges typography to 20px+, expands touch targets to 56px, simplifies navigation to 5 essentials, and pins emergency actions.")}
           </label>
         </div>
 
@@ -104,7 +106,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
           <label className="text-sm font-semibold text-text mb-2 flex items-center justify-between">
             <span className="flex items-center space-x-2">
               <Type className="w-4 h-4 text-text-muted" />
-              <span>Text Size</span>
+              <span>{translateStaticText("Text Size")}</span>
             </span>
             <span className="font-mono text-xs bg-surface-2 px-2 py-0.5 rounded border border-border">
               {settings.fontScale}%
@@ -114,30 +116,30 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
             <button
               onClick={() => handleFontChange(-10)}
               className="flex-1 py-2 px-3 rounded-theme bg-surface-2 hover:bg-border text-text font-bold flex items-center justify-center space-x-1"
-              aria-label="Decrease font size"
+              aria-label={translateStaticText("Decrease font size")}
             >
               <ZoomOut className="w-4 h-4" />
-              <span>A-</span>
+              <span>{translateStaticText("A-")}</span>
             </button>
             <button
               onClick={() => handleFontChange(10)}
               className="flex-1 py-2 px-3 rounded-theme bg-surface-2 hover:bg-border text-text font-bold flex items-center justify-center space-x-1"
-              aria-label="Increase font size"
+              aria-label={translateStaticText("Increase font size")}
             >
               <ZoomIn className="w-4 h-4" />
-              <span>A+</span>
+              <span>{translateStaticText("A+")}</span>
             </button>
           </div>
         </div>
 
         {/* Visual Accommodation Toggles */}
         <div className="space-y-3">
-          <div className="text-sm font-semibold text-text">Vision & Reading</div>
+          <div className="text-sm font-semibold text-text">{translateStaticText("Vision & Reading")}</div>
 
           <label className="flex items-center justify-between p-3 rounded-theme bg-surface-2 border border-border cursor-pointer">
             <div className="flex items-center space-x-2">
               <Eye className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">High Contrast (AAA)</span>
+              <span className="text-sm font-medium">{translateStaticText("High Contrast (AAA)")}</span>
             </div>
             <input
               type="checkbox"
@@ -150,7 +152,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
           <label className="flex items-center justify-between p-3 rounded-theme bg-surface-2 border border-border cursor-pointer">
             <div className="flex items-center space-x-2">
               <Type className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Dyslexia-Friendly Font</span>
+              <span className="text-sm font-medium">{translateStaticText("Dyslexia-Friendly Font")}</span>
             </div>
             <input
               type="checkbox"
@@ -163,7 +165,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
           <label className="flex items-center justify-between p-3 rounded-theme bg-surface-2 border border-border cursor-pointer">
             <div className="flex items-center space-x-2">
               <MousePointer className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Underline All Links</span>
+              <span className="text-sm font-medium">{translateStaticText("Underline All Links")}</span>
             </div>
             <input
               type="checkbox"
@@ -176,7 +178,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
           <label className="flex items-center justify-between p-3 rounded-theme bg-surface-2 border border-border cursor-pointer">
             <div className="flex items-center space-x-2">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Highlight-on-Hover</span>
+              <span className="text-sm font-medium">{translateStaticText("Highlight-on-Hover")}</span>
             </div>
             <input
               type="checkbox"
@@ -194,7 +196,7 @@ export const AccessibilityToolbar: React.FC<AccessibilityToolbarProps> = ({
             className="w-full py-2.5 rounded-theme border border-border bg-surface hover:bg-surface-2 text-text font-semibold flex items-center justify-center space-x-2"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Reset Accessibility Defaults</span>
+            <span>{translateStaticText("Reset Accessibility Defaults")}</span>
           </button>
         </div>
       </div>

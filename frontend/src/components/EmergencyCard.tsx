@@ -1,6 +1,7 @@
 import React from 'react';
 import { PatientProfile } from '../types';
 import { AlertTriangle, Phone, ShieldAlert, HeartPulse, X } from 'lucide-react';
+import { useLanguage } from '../i18n';
 
 interface EmergencyCardProps {
   patient: PatientProfile | null;
@@ -8,6 +9,7 @@ interface EmergencyCardProps {
 }
 
 export const EmergencyCard: React.FC<EmergencyCardProps> = ({ patient, onClose }) => {
+  const { t } = useLanguage();
   if (!patient) return null;
 
   return (
@@ -16,7 +18,7 @@ export const EmergencyCard: React.FC<EmergencyCardProps> = ({ patient, onClose }
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-red-700 hover:text-red-900 dark:text-red-300"
-          aria-label="Close emergency card"
+          aria-label={t('emergency.close')}
         >
           <X className="w-5 h-5" />
         </button>
@@ -28,7 +30,7 @@ export const EmergencyCard: React.FC<EmergencyCardProps> = ({ patient, onClose }
         </div>
         <div>
           <h3 className="text-xl font-bold tracking-tight text-red-900 dark:text-red-200">
-            Emergency Health Summary
+            {t('emergency.summary')}
           </h3>
           <p className="text-sm text-red-700 dark:text-red-300">
             {patient.full_name} ({patient.gender}, {patient.age_group.toUpperCase()})
@@ -39,35 +41,35 @@ export const EmergencyCard: React.FC<EmergencyCardProps> = ({ patient, onClose }
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div className="bg-white/80 dark:bg-black/30 p-3 rounded-md border border-red-200 dark:border-red-800">
           <div className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
-            Blood Group
+            {t('emergency.blood')}
           </div>
           <div className="text-lg font-bold">{patient.blood_group || 'Unknown'}</div>
         </div>
 
         <div className="bg-white/80 dark:bg-black/30 p-3 rounded-md border border-red-200 dark:border-red-800">
           <div className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
-            Allergies
+            {t('emergency.allergies')}
           </div>
           <div className="text-sm font-semibold text-red-700 dark:text-red-300">
-            {patient.allergies || 'No known allergies'}
+            {patient.allergies || t('emergency.noAllergies')}
           </div>
         </div>
 
         <div className="bg-white/80 dark:bg-black/30 p-3 rounded-md border border-red-200 dark:border-red-800">
           <div className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
-            Chronic Conditions
+            {t('emergency.conditions')}
           </div>
           <div className="text-sm font-medium">
-            {patient.chronic_conditions || 'None recorded'}
+            {patient.chronic_conditions || t('emergency.noneRecorded')}
           </div>
         </div>
 
         <div className="bg-white/80 dark:bg-black/30 p-3 rounded-md border border-red-200 dark:border-red-800">
           <div className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
-            Emergency Contact
+            {t('emergency.contact')}
           </div>
           <div className="text-sm font-bold">
-            {patient.emergency_contact_name || 'Not configured'}
+            {patient.emergency_contact_name || t('emergency.notConfigured')}
           </div>
           <div className="text-sm text-red-600 font-mono">
             {patient.emergency_contact_phone || 'N/A'}
@@ -81,7 +83,7 @@ export const EmergencyCard: React.FC<EmergencyCardProps> = ({ patient, onClose }
           className="flex-1 min-h-[48px] bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md flex items-center justify-center space-x-2 text-center"
         >
           <Phone className="w-5 h-5" />
-          <span>Call 112 (India Emergency)</span>
+          <span>{t('emergency.call112')}</span>
         </a>
 
         {patient.emergency_contact_phone && (
@@ -90,7 +92,7 @@ export const EmergencyCard: React.FC<EmergencyCardProps> = ({ patient, onClose }
             className="flex-1 min-h-[48px] bg-white dark:bg-gray-900 border-2 border-red-600 text-red-700 dark:text-red-300 font-bold px-4 py-2 rounded-md flex items-center justify-center space-x-2"
           >
             <HeartPulse className="w-5 h-5" />
-            <span>Call Contact</span>
+            <span>{t('emergency.callContact')}</span>
           </a>
         )}
       </div>

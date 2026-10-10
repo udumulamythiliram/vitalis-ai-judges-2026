@@ -27,6 +27,7 @@ export interface CustomThemeSettings {
   presetId: string;
   primaryColor?: string;
   secondaryColor?: string;
+  surfaceStyle: 'classic' | 'neomorphism' | 'glassmorphism' | 'clay' | 'crystal' | 'pearl';
   cardStyle: 'flat' | 'shadow' | 'outlined' | 'glass';
   borderRadius: number; // in px
   fontScale: number; // 80 to 200 %
@@ -328,6 +329,7 @@ export const THEME_PRESETS: ThemePreset[] = [
 
 export const DEFAULT_THEME_SETTINGS: CustomThemeSettings = {
   presetId: 'ocean-blue',
+  surfaceStyle: 'classic',
   cardStyle: 'shadow',
   borderRadius: 12,
   fontScale: 100,
@@ -427,6 +429,8 @@ export function applyTheme(settings: CustomThemeSettings) {
   }
 
   const root = document.documentElement;
+  // High-contrast mode keeps solid, clearly separated surfaces even if another material is selected.
+  root.dataset.surfaceStyle = settings.highContrast ? 'classic' : (settings.surfaceStyle || 'classic');
 
   // Primary / Secondary custom colors
   const primary = settings.primaryColor || preset.primary;
@@ -487,6 +491,7 @@ export function applyTheme(settings: CustomThemeSettings) {
   root.classList.toggle('dyslexia-font', settings.dyslexiaFont);
   root.classList.toggle('underline-links', settings.underlineLinks);
   root.classList.toggle('highlight-hover', settings.highlightHover);
+  root.classList.toggle('high-contrast', settings.highContrast);
 
   // Save to localStorage for instant reload persistence
   localStorage.setItem('vitalis_theme_settings', JSON.stringify(settings));

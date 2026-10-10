@@ -1,3 +1,4 @@
+import { translateStaticText, useLanguage } from "../i18n";
 import React, { useState, useEffect } from 'react';
 import { SectionId } from './Sidebar';
 import { PatientProfile } from '../types';
@@ -20,6 +21,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onSelectPatient,
   onTriggerEmergency,
 }) => {
+  useLanguage();
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Command Palette"
+      aria-label={translateStaticText("Command Palette")}
     >
       <div
         className="bg-surface border border-border rounded-theme shadow-2xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
@@ -78,7 +80,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           <Search className="w-5 h-5 text-text-muted" />
           <input
             type="text"
-            placeholder="Type a command or patient name... (Esc to exit)"
+            placeholder={translateStaticText("Type a command or patient name... (Esc to exit)")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full bg-transparent border-none outline-none text-text text-base placeholder:text-text-muted"
@@ -100,7 +102,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           >
             <div className="flex items-center space-x-3">
               <ShieldAlert className="w-5 h-5" />
-              <span>EMERGENCY: Open 112 SOS Card</span>
+              <span>{translateStaticText("EMERGENCY: Open 112 SOS Card")}</span>
             </div>
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -109,7 +111,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           {filteredPatients.length > 0 && (
             <div className="pt-2">
               <div className="px-3 py-1 text-xs font-bold text-text-muted uppercase">
-                Switch Patient Profile
+                {translateStaticText("Switch Patient Profile")}
               </div>
               {filteredPatients.map((p) => (
                 <button
@@ -133,7 +135,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
           {/* Navigation Commands */}
           <div className="pt-2">
-            <div className="px-3 py-1 text-xs font-bold text-text-muted uppercase">Navigation</div>
+            <div className="px-3 py-1 text-xs font-bold text-text-muted uppercase">{translateStaticText("Navigation")}</div>
             {filteredCommands.map((c) => (
               <button
                 key={c.section}

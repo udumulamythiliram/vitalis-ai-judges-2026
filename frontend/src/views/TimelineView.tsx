@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PatientProfile, TimelineEvent } from '../types';
 import { api } from '../api';
+import { useLanguage, translateStaticText } from '../i18n';
 import {
   Clock,
   FileText,
@@ -22,6 +23,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
   activePatient,
   onOpenDocument,
 }) => {
+  const { t, language } = useLanguage();
   const [events, setEvents] = useState<TimelineEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
@@ -65,17 +67,17 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
         <div>
           <h2 className="text-xl font-bold text-text flex items-center space-x-2">
             <Clock className="w-5 h-5 text-primary" />
-            <span>Unified Health Timeline</span>
+            <span>{t('timeline.title')}</span>
           </h2>
           <p className="text-xs text-text-muted mt-0.5">
-            Chronological aggregation of medications, lab observations, documents, and doctor encounters for {activePatient?.full_name}.
+            {t('timeline.desc', { name: activePatient?.full_name || '' })}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <input
             type="text"
-            placeholder="Search timeline..."
+            placeholder={t('timeline.search')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-surface-2 border border-border rounded px-3 py-1.5 text-xs text-text focus:outline-none"
@@ -86,22 +88,22 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
             onChange={(e) => setFilterType(e.target.value)}
             className="bg-surface-2 border border-border rounded px-3 py-1.5 text-xs text-text font-semibold"
           >
-            <option value="all">All Events</option>
-            <option value="medication">Medications</option>
-            <option value="lab_test">Lab Tests</option>
-            <option value="document_upload">Documents</option>
-            <option value="vaccination">Vaccinations</option>
-            <option value="appointment">Appointments</option>
+            <option value="all">{t('timeline.allEvents')}</option>
+            <option value="medication">{translateStaticText("Medications")}</option>
+            <option value="lab_test">{translateStaticText("Lab Tests")}</option>
+            <option value="document_upload">{translateStaticText("Documents")}</option>
+            <option value="vaccination">{translateStaticText("Vaccinations")}</option>
+            <option value="appointment">{translateStaticText("Appointments")}</option>
           </select>
         </div>
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-text-muted">Loading timeline records...</div>
+        <div className="p-12 text-center text-text-muted">{t('timeline.loading')}</div>
       ) : filteredEvents.length === 0 ? (
         <div className="bg-surface rounded-theme p-12 border border-border text-center text-text-muted">
           <Clock className="w-10 h-10 mx-auto mb-2 opacity-30" />
-          <p>No timeline events recorded yet for this profile.</p>
+          <p>{translateStaticText("No timeline events recorded yet for this profile.")}</p>
         </div>
       ) : (
         <div className="relative border-l-2 border-border ml-4 sm:ml-8 pl-6 space-y-6 py-2">
@@ -133,7 +135,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
                     </div>
 
                     <span className="text-xs text-text-muted font-mono">
-                      {new Date(evt.date).toLocaleDateString()}
+                      {new Date(evt.date).toLocaleDateString(language)}
                     </span>
                   </div>
 
@@ -141,7 +143,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
 
                   {evt.source_id && (
                     <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between text-xs">
-                      <span className="text-text-muted">Grounded Source:</span>
+                      <span className="text-text-muted">{translateStaticText("Grounded Source:")}</span>
                       <button
                         onClick={() => onOpenDocument && onOpenDocument(evt.source_id!)}
                         className="text-primary hover:underline font-semibold"

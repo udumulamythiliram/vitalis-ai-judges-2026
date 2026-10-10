@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PatientProfile } from '../types';
 import { api } from '../api';
+import { useLanguage, translateStaticText } from '../i18n';
 import {
   Users2,
   UserPlus,
@@ -26,6 +27,7 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
   onSelectPatient,
   onRefreshPatients,
 }) => {
+  const { t } = useLanguage();
   const [caregivers, setCaregivers] = useState<any[]>([]);
   const [showAddPatientModal, setShowAddPatientModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -91,10 +93,10 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
         <div>
           <h2 className="text-xl font-bold text-text flex items-center space-x-2">
             <Users2 className="w-5 h-5 text-primary" />
-            <span>Family, Children & Caregiver Sharing</span>
+            <span>{t('family.title')}</span>
           </h2>
           <p className="text-xs text-text-muted mt-0.5">
-            Manage guardian-linked children, elderly parents, and granular caregiver permissions.
+            {t('family.desc')}
           </p>
         </div>
 
@@ -103,7 +105,7 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
           className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs flex items-center space-x-1.5 shadow-sm"
         >
           <UserPlus className="w-4 h-4" />
-          <span>Add Family Member</span>
+          <span>{t('family.add')}</span>
         </button>
       </div>
 
@@ -127,7 +129,7 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                   </div>
                   {isActive && (
                     <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
-                      Active
+                      {translateStaticText("Active")}
                     </span>
                   )}
                 </div>
@@ -138,8 +140,8 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                 </div>
 
                 <div className="text-xs text-text-muted mt-2 pt-2 border-t border-border/50">
-                  <div>Allergies: <span className="font-medium text-text">{p.allergies || 'None'}</span></div>
-                  <div>Conditions: <span className="font-medium text-text">{p.chronic_conditions || 'None'}</span></div>
+                  <div>{translateStaticText("Allergies:")} <span className="font-medium text-text">{p.allergies || 'None'}</span></div>
+                  <div>{translateStaticText("Conditions:")} <span className="font-medium text-text">{p.chronic_conditions || 'None'}</span></div>
                 </div>
               </div>
 
@@ -165,10 +167,10 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
           <div>
             <h3 className="font-bold text-base text-text flex items-center space-x-2">
               <Shield className="w-5 h-5 text-primary" />
-              <span>Caregiver Access for {activePatient?.full_name}</span>
+              <span>{translateStaticText("Caregiver Access for")} {activePatient?.full_name}</span>
             </h3>
             <p className="text-xs text-text-muted">
-              Explicit, revocable sharing with family doctors, spouses, or professional caretakers.
+              {translateStaticText("Explicit, revocable sharing with family doctors, spouses, or professional caretakers.")}
             </p>
           </div>
 
@@ -177,13 +179,13 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
             className="px-3 py-1.5 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs flex items-center space-x-1.5 border border-border"
           >
             <Mail className="w-4 h-4 text-primary" />
-            <span>Invite Caregiver</span>
+            <span>{translateStaticText("Invite Caregiver")}</span>
           </button>
         </div>
 
         <div className="mt-4">
           {caregivers.length === 0 ? (
-            <p className="text-text-muted text-xs py-4">No external caregivers linked to this profile.</p>
+            <p className="text-text-muted text-xs py-4">{translateStaticText("No external caregivers linked to this profile.")}</p>
           ) : (
             <div className="divide-y divide-border">
               {caregivers.map((cg) => (
@@ -193,7 +195,7 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                     <div className="text-xs text-text-muted font-mono">{cg.caregiver_email}</div>
                   </div>
                   <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-0.5 rounded border border-emerald-300">
-                    Consent Active
+                    {translateStaticText("Consent Active")}
                   </span>
                 </div>
               ))}
@@ -206,17 +208,17 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
       {showAddPatientModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-surface rounded-theme border border-border shadow-2xl p-6 max-w-md w-full animate-in zoom-in-95">
-            <h3 className="font-bold text-lg text-text">Add Dependent Profile</h3>
+            <h3 className="font-bold text-lg text-text">{translateStaticText("Add Dependent Profile")}</h3>
             <p className="text-xs text-text-muted mt-0.5">
-              Guardian-managed profile with complete data isolation.
+              {translateStaticText("Guardian-managed profile with complete data isolation.")}
             </p>
 
             <div className="mt-4 space-y-3">
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Full Name *</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Full Name *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Baby Aarav or Parent Name"
+                  placeholder={translateStaticText("e.g. Baby Aarav or Parent Name")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -224,7 +226,7 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Relationship</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Relationship")}</label>
                 <select
                   value={relation}
                   onChange={(e) => {
@@ -235,14 +237,14 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                   }}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
                 >
-                  <option value="child">Child (Guardian Managed)</option>
-                  <option value="parent">Elderly Parent</option>
-                  <option value="dependent">Dependent / Other</option>
+                  <option value="child">{translateStaticText("Child (Guardian Managed)")}</option>
+                  <option value="parent">{translateStaticText("Elderly Parent")}</option>
+                  <option value="dependent">{translateStaticText("Dependent / Other")}</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Date of Birth</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Date of Birth")}</label>
                 <input
                   type="date"
                   value={dob}
@@ -257,13 +259,13 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                 onClick={() => setShowAddPatientModal(false)}
                 className="px-4 py-2 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs"
               >
-                Cancel
+                {translateStaticText("Cancel")}
               </button>
               <button
                 onClick={handleCreatePatient}
                 className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs"
               >
-                Create Profile
+                {translateStaticText("Create Profile")}
               </button>
             </div>
           </div>
@@ -274,17 +276,17 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
       {showInviteModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-surface rounded-theme border border-border shadow-2xl p-6 max-w-md w-full animate-in zoom-in-95">
-            <h3 className="font-bold text-lg text-text">Invite Caregiver</h3>
+            <h3 className="font-bold text-lg text-text">{translateStaticText("Invite Caregiver")}</h3>
             <p className="text-xs text-text-muted mt-0.5">
-              Send an invite with scoped permissions for {activePatient?.full_name}.
+              {translateStaticText("Send an invite with scoped permissions for")} {activePatient?.full_name}.
             </p>
 
             <div className="mt-4 space-y-3">
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Caregiver Name</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Caregiver Name")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Dr. Rao / Nurse Sarah"
+                  placeholder={translateStaticText("e.g. Dr. Rao / Nurse Sarah")}
                   value={cgName}
                   onChange={(e) => setCgName(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -292,10 +294,10 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Email Address *</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Email Address *")}</label>
                 <input
                   type="email"
-                  placeholder="caregiver@email.com"
+                  placeholder={translateStaticText("caregiver@email.com")}
                   value={cgEmail}
                   onChange={(e) => setCgEmail(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -308,13 +310,13 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                 onClick={() => setShowInviteModal(false)}
                 className="px-4 py-2 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs"
               >
-                Cancel
+                {translateStaticText("Cancel")}
               </button>
               <button
                 onClick={handleInviteCaregiver}
                 className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs"
               >
-                Send Invite
+                {translateStaticText("Send Invite")}
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PatientProfile, Medication } from '../types';
 import { api } from '../api';
+import { useLanguage, translateStaticText } from '../i18n';
 import {
   Pill,
   Clock,
@@ -23,6 +24,7 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
   activePatient,
   elderlyMode = false,
 }) => {
+  const { t } = useLanguage();
   const [medications, setMedications] = useState<Medication[]>([]);
   const [reminders, setReminders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,8 +89,8 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
       <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 rounded-theme p-4 flex items-start space-x-3 text-xs text-amber-900 dark:text-amber-200">
         <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-600 mt-0.5" />
         <div>
-          <span className="font-bold">Clinical Safety Notice: </span>
-          Vitalis AI organizes recorded medication schedules for informational assistance. It does not evaluate clinical appropriateness, drug interactions, or adjust dosages. Always consult your prescriber or pharmacist before changing any regimen.
+          <span className="font-bold">{translateStaticText("Clinical Safety Notice:")} </span>
+          {translateStaticText("Vitalis AI organizes recorded medication schedules for informational assistance. It does not evaluate clinical appropriateness, drug interactions, or adjust dosages. Always consult your prescriber or pharmacist before changing any regimen.")}
         </div>
       </div>
 
@@ -97,10 +99,10 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
         <div>
           <h2 className="text-xl font-bold text-text flex items-center space-x-2">
             <Pill className="w-5 h-5 text-primary" />
-            <span>Medications & Schedule</span>
+            <span>{t('meds.title')}</span>
           </h2>
           <p className="text-xs text-text-muted mt-0.5">
-            Active and verified prescriptions for {activePatient?.full_name}.
+            {t('meds.desc', { name: activePatient?.full_name || '' })}
           </p>
         </div>
 
@@ -111,7 +113,7 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
           }`}
         >
           <Plus className="w-4 h-4" />
-          <span>Add Medication</span>
+          <span>{t('meds.add')}</span>
         </button>
       </div>
 
@@ -127,7 +129,7 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
         <div className="bg-surface rounded-theme p-4 border border-border shadow-theme">
           <div className="flex items-center space-x-2 text-sm font-bold text-text mb-3">
             <Bell className="w-4 h-4 text-primary" />
-            <span>Scheduled Daily Reminders</span>
+            <span>{t('meds.reminders')}</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -138,7 +140,7 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
               >
                 <div>
                   <div className="font-bold text-text text-sm">{r.title}</div>
-                  <div className="text-xs text-text-muted">Repeat: {r.repeat_pattern}</div>
+                  <div className="text-xs text-text-muted">{translateStaticText("Repeat:")} {r.repeat_pattern}</div>
                 </div>
                 <div className="font-mono text-sm font-bold text-primary bg-surface px-2 py-1 rounded border border-border">
                   {r.reminder_time}
@@ -152,15 +154,15 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
       {/* Medications List */}
       <div className="bg-surface rounded-theme border border-border overflow-hidden shadow-theme">
         <div className="p-4 bg-surface-2 border-b border-border">
-          <h3 className="font-bold text-text text-base">Current Medication Regimen</h3>
+          <h3 className="font-bold text-text text-base">{t('meds.current')}</h3>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-text-muted">Loading medications...</div>
+          <div className="p-8 text-center text-text-muted">{translateStaticText("Loading medications...")}</div>
         ) : medications.length === 0 ? (
           <div className="p-12 text-center text-text-muted">
             <Pill className="w-10 h-10 mx-auto mb-2 opacity-30" />
-            <p>No active medications found for this profile.</p>
+            <p>{translateStaticText("No active medications found for this profile.")}</p>
           </div>
         ) : (
           <div className="divide-y divide-border">
@@ -182,14 +184,14 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
                   </div>
 
                   <div className="text-sm text-text-muted mt-1 flex flex-wrap gap-x-4 gap-y-1">
-                    <span className="font-semibold text-text">Dose: {m.dosage}</span>
-                    <span>Frequency: {m.frequency}</span>
-                    <span>Instructions: {m.instructions}</span>
+                    <span className="font-semibold text-text">{translateStaticText("Dose:")} {m.dosage}</span>
+                    <span>{translateStaticText("Frequency:")} {m.frequency}</span>
+                    <span>{translateStaticText("Instructions:")} {m.instructions}</span>
                   </div>
 
                   {m.source_doc_name && (
                     <div className="text-xs text-text-muted mt-1.5">
-                      Grounded Source: <span className="font-medium text-text">{m.source_doc_name}</span>
+                      {translateStaticText("Grounded Source:")} <span className="font-medium text-text">{m.source_doc_name}</span>
                     </div>
                   )}
                 </div>
@@ -203,7 +205,7 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
                     }`}
                   >
                     <Check className="w-4 h-4" />
-                    <span>Take Now</span>
+                    <span>{translateStaticText("Take Now")}</span>
                   </button>
 
                   <button
@@ -213,7 +215,7 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
                     }`}
                   >
                     <XCircle className="w-4 h-4 text-text-muted" />
-                    <span>Skip</span>
+                    <span>{translateStaticText("Skip")}</span>
                   </button>
                 </div>
               </div>
@@ -226,15 +228,15 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-surface rounded-theme border border-border shadow-2xl p-6 max-w-md w-full animate-in zoom-in-95">
-            <h3 className="font-bold text-lg text-text">Add Prescription Medication</h3>
-            <p className="text-xs text-text-muted mt-0.5">For {activePatient?.full_name}</p>
+            <h3 className="font-bold text-lg text-text">{translateStaticText("Add Prescription Medication")}</h3>
+            <p className="text-xs text-text-muted mt-0.5">{translateStaticText("For")} {activePatient?.full_name}</p>
 
             <div className="mt-4 space-y-3">
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Drug Name *</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Drug Name *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Metformin, Telmisartan"
+                  placeholder={translateStaticText("e.g. Metformin, Telmisartan")}
                   value={newDrug}
                   onChange={(e) => setNewDrug(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -242,10 +244,10 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Dosage *</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Dosage *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. 500 mg, 1 tablet"
+                  placeholder={translateStaticText("e.g. 500 mg, 1 tablet")}
                   value={newDose}
                   onChange={(e) => setNewDose(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
@@ -253,17 +255,17 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-text mb-1 block">Frequency</label>
+                <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Frequency")}</label>
                 <select
                   value={newFreq}
                   onChange={(e) => setNewFreq(e.target.value)}
                   className="w-full bg-surface-2 border border-border rounded p-2 text-sm text-text focus:outline-none"
                 >
-                  <option value="Once daily">Once daily (OD)</option>
-                  <option value="Twice daily">Twice daily (BD)</option>
-                  <option value="Three times daily">Three times daily (TDS)</option>
-                  <option value="At bedtime">At bedtime (HS)</option>
-                  <option value="As needed">As needed (PRN)</option>
+                  <option value="Once daily">{translateStaticText("Once daily (OD)")}</option>
+                  <option value="Twice daily">{translateStaticText("Twice daily (BD)")}</option>
+                  <option value="Three times daily">{translateStaticText("Three times daily (TDS)")}</option>
+                  <option value="At bedtime">{translateStaticText("At bedtime (HS)")}</option>
+                  <option value="As needed">{translateStaticText("As needed (PRN)")}</option>
                 </select>
               </div>
             </div>
@@ -273,13 +275,13 @@ export const MedicationsView: React.FC<MedicationsViewProps> = ({
                 onClick={() => setShowAddModal(false)}
                 className="px-4 py-2 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs"
               >
-                Cancel
+                {translateStaticText("Cancel")}
               </button>
               <button
                 onClick={handleAddMed}
                 className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs"
               >
-                Save Medication
+                {translateStaticText("Save Medication")}
               </button>
             </div>
           </div>

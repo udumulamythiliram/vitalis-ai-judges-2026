@@ -37,6 +37,8 @@ The Vercel deployment serves the React app and FastAPI API from one origin. The 
 
 The public judge build uses fictional seeded personas and a shared temporary workspace. Use fictional or de-identified documents only. Judge uploads are limited to 3 MB and are processed once for an OCR/text preview without saving the uploaded file or its extracted text to the database. If a judge explicitly requests a live summary or copilot answer, the selected provider receives the submitted text and the judge's own API key; the key is held in browser-tab memory and is not saved by Vitalis. Provider usage may incur charges. Demo chats and other changes without a judge key can be visible to other visitors and may reset when the server instance changes. The serverless SQLite database uses temporary runtime storage, so this build is for hackathon evaluation, not durable production use.
 
+The interface supports English, Hindi, and Telugu. The selected language is saved in the browser and also guides copilot replies, document summaries, emergency prompts, voice input, and speech output when the browser supports those locales. Theme Studio includes Classic, Neomorphism, Glassmorphism, Clay, Crystal, and Pearl morphism surface styles; high-contrast mode uses solid surfaces for legibility.
+
 To deploy the combined app, set the Vercel project root directory to the repository root and deploy this folder. Vercel detects `index.py` as the FastAPI entrypoint, installs `requirements.txt`, and runs the frontend build in `vercel.json`.
 
 ---

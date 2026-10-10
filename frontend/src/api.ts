@@ -84,10 +84,10 @@ export const api = {
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   },
-  summarizeJudgePreview: (documentText: string) => fetchJson<any>('/documents/judge-summary', {
+  summarizeJudgePreview: (documentText: string, language: 'en' | 'hi' | 'te' = 'en') => fetchJson<any>('/documents/judge-summary', {
     method: 'POST',
     headers: judgeLlmHeaders(),
-    body: JSON.stringify({ document_text: documentText }),
+    body: JSON.stringify({ document_text: documentText, language }),
   }),
 
   // Extraction
@@ -104,7 +104,7 @@ export const api = {
   // Chat
   getConversations: (patientId: string) => fetchJson<any[]>(`/chat/conversations?patient_id=${patientId}`),
   getMessages: (conversationId: string) => fetchJson<any[]>(`/chat/conversations/${conversationId}/messages`),
-  sendMessage: (data: { patient_id: string; message: string; conversation_id?: string }) =>
+  sendMessage: (data: { patient_id: string; message: string; conversation_id?: string; language?: 'en' | 'hi' | 'te' }) =>
     fetchJson<any>('/chat/message', { method: 'POST', headers: judgeLlmHeaders(), body: JSON.stringify(data) }),
 
   // Timeline

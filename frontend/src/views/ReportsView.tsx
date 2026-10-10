@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PatientProfile, DocumentItem } from '../types';
 import { api } from '../api';
+import { useLanguage, translateStaticText } from '../i18n';
 import {
   TrendingUp,
   FileText,
@@ -29,6 +30,7 @@ interface ReportsViewProps {
 }
 
 export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
+  const { t, language } = useLanguage();
   const [trends, setTrends] = useState<any[]>([]);
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [selectedTest, setSelectedTest] = useState<string>('');
@@ -111,10 +113,10 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
       <div className="bg-surface rounded-theme p-5 border border-border shadow-theme">
         <h2 className="text-xl font-bold text-text flex items-center space-x-2">
           <TrendingUp className="w-5 h-5 text-primary" />
-          <span>Reports, Lab Trends & Multi-Report Comparison</span>
+          <span>{t('reports.title')}</span>
         </h2>
         <p className="text-xs text-text-muted mt-0.5">
-          Track clinical test trajectory over time against reference bands for {activePatient?.full_name}.
+          {t('reports.desc', { name: activePatient?.full_name || '' })}
         </p>
       </div>
 
@@ -122,14 +124,14 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
       <div className="bg-surface rounded-theme p-5 border border-border shadow-theme">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-border gap-4">
           <div>
-            <h3 className="font-bold text-base text-text">Laboratory Observation Trend</h3>
+            <h3 className="font-bold text-base text-text">{t('reports.trend')}</h3>
             <p className="text-xs text-text-muted">
               {activeTrendData ? `Reference Range: ${activeTrendData.reference_range || 'Standard'}` : ''}
             </p>
           </div>
 
           <div className="flex items-center space-x-2">
-            <label className="text-xs font-semibold text-text-muted">Select Test:</label>
+            <label className="text-xs font-semibold text-text-muted">{t('reports.selectTest')}:</label>
             <select
               value={selectedTest}
               onChange={(e) => setSelectedTest(e.target.value)}
@@ -179,7 +181,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
           </div>
         ) : (
           <div className="text-center py-16 text-text-muted text-sm">
-            No sequential numeric test data recorded for this patient.
+            {translateStaticText("No sequential numeric test data recorded for this patient.")}
           </div>
         )}
       </div>
@@ -189,16 +191,16 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
         <div className="pb-4 border-b border-border">
           <h3 className="font-bold text-base text-text flex items-center space-x-2">
             <FileText className="w-5 h-5 text-primary" />
-            <span>Multi-Report Comparison (Delta & Percent Change)</span>
+            <span>{translateStaticText("Multi-Report Comparison (Delta & Percent Change)")}</span>
           </h3>
           <p className="text-xs text-text-muted mt-0.5">
-            Compare two diagnostic lab reports across test observations with computed deltas.
+            {translateStaticText("Compare two diagnostic lab reports across test observations with computed deltas.")}
           </p>
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
           <div>
-            <label className="text-xs font-semibold text-text mb-1 block">Baseline Report (Report 1):</label>
+            <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Baseline Report (Report 1):")}</label>
             <select
               value={doc1}
               onChange={(e) => setDoc1(e.target.value)}
@@ -206,14 +208,14 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
             >
               {documents.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {d.original_filename} ({new Date(d.created_at).toLocaleDateString()})
+                  {d.original_filename} ({new Date(d.created_at).toLocaleDateString(language)})
                 </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-text mb-1 block">Follow-up Report (Report 2):</label>
+            <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Follow-up Report (Report 2):")}</label>
             <select
               value={doc2}
               onChange={(e) => setDoc2(e.target.value)}
@@ -221,7 +223,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
             >
               {documents.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {d.original_filename} ({new Date(d.created_at).toLocaleDateString()})
+                  {d.original_filename} ({new Date(d.created_at).toLocaleDateString(language)})
                 </option>
               ))}
             </select>
@@ -241,11 +243,11 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
             <table className="w-full text-left text-xs">
               <thead className="bg-surface-2 text-text-muted uppercase font-bold border-b border-border">
                 <tr>
-                  <th className="p-3">Test Name</th>
-                  <th className="p-3">Baseline (Rep 1)</th>
-                  <th className="p-3">Follow-up (Rep 2)</th>
-                  <th className="p-3">Delta Change</th>
-                  <th className="p-3">% Change</th>
+                  <th className="p-3">{translateStaticText("Test Name")}</th>
+                  <th className="p-3">{translateStaticText("Baseline (Rep 1)")}</th>
+                  <th className="p-3">{translateStaticText("Follow-up (Rep 2)")}</th>
+                  <th className="p-3">{translateStaticText("Delta Change")}</th>
+                  <th className="p-3">{translateStaticText("% Change")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -291,30 +293,30 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
         <div className="pb-3 border-b border-border">
           <h3 className="font-bold text-base text-text flex items-center space-x-2">
             <Activity className="w-5 h-5 text-primary" />
-            <span>Daily Vitals Tracker</span>
+            <span>{translateStaticText("Daily Vitals Tracker")}</span>
           </h3>
           <p className="text-xs text-text-muted mt-0.5">
-            Log patient-entered blood pressure, glucose, or pulse.
+            {translateStaticText("Log patient-entered blood pressure, glucose, or pulse.")}
           </p>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3 items-end">
           <div>
-            <label className="text-xs font-semibold text-text mb-1 block">Metric:</label>
+            <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Metric:")}</label>
             <select
               value={vitalType}
               onChange={(e) => setVitalType(e.target.value)}
               className="bg-surface-2 border border-border rounded px-3 py-1.5 text-xs text-text"
             >
-              <option value="blood_pressure">Blood Pressure (Systolic/Diastolic)</option>
-              <option value="glucose">Fasting Blood Glucose (mg/dL)</option>
-              <option value="pulse">Pulse Rate (bpm)</option>
-              <option value="weight">Body Weight (kg)</option>
+              <option value="blood_pressure">{translateStaticText("Blood Pressure (Systolic/Diastolic)")}</option>
+              <option value="glucose">{translateStaticText("Fasting Blood Glucose (mg/dL)")}</option>
+              <option value="pulse">{translateStaticText("Pulse Rate (bpm)")}</option>
+              <option value="weight">{translateStaticText("Body Weight (kg)")}</option>
             </select>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-text mb-1 block">Value:</label>
+            <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Value:")}</label>
             <input
               type="number"
               placeholder={vitalType === 'blood_pressure' ? 'Systolic (e.g. 120)' : 'Value'}
@@ -326,10 +328,10 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
 
           {vitalType === 'blood_pressure' && (
             <div>
-              <label className="text-xs font-semibold text-text mb-1 block">Diastolic:</label>
+              <label className="text-xs font-semibold text-text mb-1 block">{translateStaticText("Diastolic:")}</label>
               <input
                 type="number"
-                placeholder="Diastolic (e.g. 80)"
+                placeholder={translateStaticText("Diastolic (e.g. 80)")}
                 value={vitalVal2}
                 onChange={(e) => setVitalVal2(e.target.value)}
                 className="bg-surface-2 border border-border rounded px-3 py-1.5 text-xs text-text w-32"
@@ -341,7 +343,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ activePatient }) => {
             onClick={handleLogVital}
             className="px-4 py-2 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold text-xs"
           >
-            Log Entry
+            {translateStaticText("Log Entry")}
           </button>
         </div>
       </div>

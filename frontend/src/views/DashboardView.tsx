@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PatientProfile, Observation, Medication, Appointment, DocumentItem } from '../types';
 import { api } from '../api';
 import { SectionId } from '../components/Sidebar';
+import { useLanguage } from '../i18n';
 import {
   FileText,
   Pill,
@@ -32,6 +33,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onAskCopilot,
   elderlyMode = false,
 }) => {
+  const { language, t } = useLanguage();
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [medications, setMedications] = useState<Medication[]>([]);
   const [abnormalObs, setAbnormalObs] = useState<Observation[]>([]);
@@ -92,17 +94,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div>
             <div className="flex items-center space-x-2 text-primary text-sm font-bold uppercase tracking-wider mb-1">
               <Sparkles className="w-4 h-4" />
-              <span>Personalized Health Copilot</span>
+              <span>{t('dashboard.eyebrow')}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">
-              Welcome, {activePatient?.full_name || 'Friend'}
+              {t('dashboard.welcome', { name: activePatient?.full_name || 'Friend' })}
             </h1>
             <p className="text-text-muted text-sm sm:text-base mt-1">
               {activePatient?.age_group === 'child'
-                ? `Managing records for child profile (${activePatient.full_name}). All answers guardian-scoped.`
+                ? t('dashboard.childIntro', { name: activePatient.full_name })
                 : activePatient?.age_group === 'elderly'
-                ? `Your prescriptions and health documents are organized simply in large, readable format.`
-                : `All your prescriptions, lab tests, and clinical history in one place. Ask anything.`}
+                ? t('dashboard.elderIntro')
+                : t('dashboard.intro')}
             </p>
           </div>
 
@@ -112,13 +114,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               className="px-4 py-2.5 rounded-theme bg-primary hover:bg-primary-hover text-primary-contrast font-bold flex items-center space-x-2 shadow-sm transition-all"
             >
               <Upload className="w-4 h-4" />
-              <span>Upload Document</span>
+              <span>{t('dashboard.upload')}</span>
             </button>
             <button
               onClick={() => onNavigate('demo')}
               className="px-4 py-2.5 rounded-theme bg-surface-2 hover:bg-border text-text font-bold border border-border transition-all"
             >
-              <span>Judge Personas</span>
+              <span>{t('dashboard.judges')}</span>
             </button>
           </div>
         </div>
@@ -142,8 +144,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               type="text"
               placeholder={
                 elderlyMode
-                  ? 'Ask anything about your health or medicines...'
-                  : 'Ask Vitalis: "Explain my latest blood test", "Which values are high?", "What meds am I taking?"'
+                  ? t('copilot.placeholder')
+                  : t('dashboard.askPlaceholder')
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -153,7 +155,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               type="submit"
               className="bg-primary hover:bg-primary-hover text-primary-contrast font-bold px-4 py-2 rounded-theme text-sm flex items-center space-x-1.5 transition-all"
             >
-              <span>Ask</span>
+              <span>{t('dashboard.ask')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -169,10 +171,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <div>
               <h4 className="font-bold text-amber-900 dark:text-amber-200">
-                {pendingReviewCount} Document{pendingReviewCount > 1 ? 's' : ''} Awaiting Review
+                {t('dashboard.pending', { count: pendingReviewCount })}
               </h4>
               <p className="text-xs text-amber-800 dark:text-amber-300">
-                Verify AI-extracted values before committing to your permanent health profile.
+                {t('dashboard.verify')}
               </p>
             </div>
           </div>
@@ -180,7 +182,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             onClick={() => onNavigate('review')}
             className="px-3 py-1.5 rounded-theme bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center space-x-1"
           >
-            <span>Review Center</span>
+            <span>{t('dashboard.review')}</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -196,16 +198,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="p-2 bg-primary/10 text-primary rounded-theme">
                   <Pill className="w-5 h-5" />
                 </div>
-                <h3 className="font-bold text-text text-base">Active Medications</h3>
+                <h3 className="font-bold text-text text-base">{t('dashboard.activeMeds')}</h3>
               </div>
               <span className="text-xs font-semibold bg-surface-2 px-2 py-0.5 rounded text-text-muted">
-                {medications.length} Prescribed
+                {medications.length} {t('dashboard.prescribed')}
               </span>
             </div>
 
             <div className="space-y-2.5">
               {medications.length === 0 ? (
-                <p className="text-text-muted text-sm py-4">No active medications registered.</p>
+                <p className="text-text-muted text-sm py-4">{t('dashboard.noMeds')}</p>
               ) : (
                 medications.slice(0, 3).map((m) => (
                   <div
@@ -217,7 +219,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <div className="text-xs text-text-muted">{m.dosage} • {m.frequency}</div>
                     </div>
                     <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
-                      Active
+                      {t('dashboard.activeMeds')}
                     </span>
                   </div>
                 ))
@@ -229,7 +231,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             onClick={() => onNavigate('medications')}
             className="mt-4 pt-3 border-t border-border text-xs font-bold text-primary flex items-center justify-between hover:underline"
           >
-            <span>View All Medications & Reminders</span>
+            <span>{t('dashboard.viewMeds')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -242,10 +244,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="p-2 bg-amber-500/10 text-amber-600 rounded-theme">
                   <AlertTriangle className="w-5 h-5" />
                 </div>
-                <h3 className="font-bold text-text text-base">Values Outside Range</h3>
+                <h3 className="font-bold text-text text-base">{t('dashboard.outOfRange')}</h3>
               </div>
               <span className="text-xs font-semibold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded">
-                Deterministic
+                {t('dashboard.deterministic')}
               </span>
             </div>
 
@@ -253,7 +255,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {abnormalObs.length === 0 ? (
                 <div className="p-4 rounded-theme bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-sm flex items-center space-x-2">
                   <ShieldCheck className="w-5 h-5" />
-                  <span>All extracted test values are within printed laboratory ranges.</span>
+                  <span>{t('dashboard.withinRange')}</span>
                 </div>
               ) : (
                 abnormalObs.map((obs) => (
@@ -264,7 +266,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <div>
                       <div className="font-bold text-text text-sm">{obs.test_name}</div>
                       <div className="text-xs text-text-muted">
-                        Lab Range: {obs.reference_range || 'Standard'}
+                        {t('dashboard.labRange', { range: obs.reference_range || 'Standard' })}
                       </div>
                     </div>
                     <div className="text-right">
@@ -285,7 +287,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             onClick={() => onNavigate('reports')}
             className="mt-4 pt-3 border-t border-border text-xs font-bold text-primary flex items-center justify-between hover:underline"
           >
-            <span>View Lab Trend Charts & History</span>
+            <span>{t('dashboard.viewTrends')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -298,13 +300,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="p-2 bg-primary/10 text-primary rounded-theme">
                   <Calendar className="w-5 h-5" />
                 </div>
-                <h3 className="font-bold text-text text-base">Doctor Visits</h3>
+                <h3 className="font-bold text-text text-base">{t('dashboard.doctorVisits')}</h3>
               </div>
             </div>
 
             <div className="space-y-2.5">
               {appointments.length === 0 ? (
-                <p className="text-text-muted text-sm py-4">No upcoming appointments scheduled.</p>
+                <p className="text-text-muted text-sm py-4">{t('dashboard.noAppointments')}</p>
               ) : (
                 appointments.slice(0, 2).map((a) => (
                   <div
@@ -316,13 +318,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <div className="mt-2 flex items-center justify-between">
                       <div className="text-xs font-semibold text-primary flex items-center space-x-1">
                         <Clock className="w-3.5 h-3.5" />
-                        <span>{new Date(a.appointment_time).toLocaleDateString()}</span>
+                        <span>{new Date(a.appointment_time).toLocaleDateString(language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-IN')}</span>
                       </div>
                       <button
                         onClick={() => onNavigate('appointments')}
                         className="text-[11px] font-bold bg-primary text-primary-contrast px-2 py-0.5 rounded shadow-sm"
                       >
-                        Prepare Sheet
+                        {t('dashboard.prepare')}
                       </button>
                     </div>
                   </div>
@@ -335,7 +337,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             onClick={() => onNavigate('appointments')}
             className="mt-4 pt-3 border-t border-border text-xs font-bold text-primary flex items-center justify-between hover:underline"
           >
-            <span>Manage All Appointments</span>
+            <span>{t('dashboard.manageAppointments')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -345,14 +347,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="bg-surface rounded-theme p-6 border border-border shadow-theme">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-bold text-lg text-text">Recent Medical Records</h3>
-            <p className="text-xs text-text-muted">Prescriptions, diagnostic reports, and summaries</p>
+            <h3 className="font-bold text-lg text-text">{t('dashboard.recentRecords')}</h3>
+            <p className="text-xs text-text-muted">{t('dashboard.recordsDesc')}</p>
           </div>
           <button
             onClick={() => onNavigate('records')}
             className="text-xs font-bold text-primary hover:underline flex items-center space-x-1"
           >
-            <span>View All ({documents.length})</span>
+            <span>{t('dashboard.viewAll', { count: documents.length })}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -360,7 +362,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {documents.length === 0 ? (
           <div className="text-center py-8 text-text-muted">
             <FileText className="w-10 h-10 mx-auto mb-2 opacity-40" />
-            <p>No documents uploaded yet for this patient profile.</p>
+                  <p>{t('dashboard.noneUploaded')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -384,7 +386,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                 <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between text-xs">
                   <span className="text-text-muted">
-                    {new Date(d.created_at).toLocaleDateString()}
+                      {new Date(d.created_at).toLocaleDateString(language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-IN')}
                   </span>
                   <span
                     className={`font-semibold capitalize px-2 py-0.5 rounded text-[11px] ${

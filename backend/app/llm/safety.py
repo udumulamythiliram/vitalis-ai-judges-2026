@@ -6,13 +6,21 @@ EMERGENCY_KEYWORDS = [
     "can't breathe", "difficulty breathing", "stroke", "facial drooping",
     "arm weakness", "slurred speech", "suicide", "kill myself", "end my life",
     "severe bleeding", "unconscious", "anaphylaxis", "severe allergic reaction",
-    "overdose", "coughing blood"
+    "overdose", "coughing blood",
+    "सीने में दर्द", "छाती में दर्द", "सांस लेने में तकलीफ", "सांस नहीं आ रही", "सांस फूलना",
+    "स्ट्रोक", "चेहरा टेढ़ा", "हाथ में कमजोरी", "बोली लड़खड़ाना", "आत्महत्या", "खुद को मार",
+    "तेज खून बहना", "बेहोश", "गंभीर एलर्जी", "ओवरडोज़",
+    "ఛాతీ నొప్పి", "శ్వాస తీసుకోవడంలో ఇబ్బంది", "ఊపిరి పీల్చుకోలేక", "స్ట్రోక్", "ముఖం వాలిపోవడం",
+    "చేయి బలహీనత", "మాట తడబడటం", "ఆత్మహత్య", "తీవ్ర రక్తస్రావం", "స్పృహ కోల్పోవడం", "తీవ్రమైన అలర్జీ"
 ]
 
 MEDICATION_CHANGE_KEYWORDS = [
     "double my dose", "increase my dose", "decrease my dose", "change my dose",
     "adjust my dose", "stop taking", "stop my medicine", "prescribe me",
-    "what dose should i take", "should i take more", "can i take more"
+    "what dose should i take", "should i take more", "can i take more",
+    "खुराक दोगुनी", "मात्रा दोगुनी", "खुराक बढ़ा", "खुराक घटा", "दवा बंद कर",
+    "ज्यादा दवा", "कितनी खुराक", "मात्रा बदल",
+    "మోతాదు రెట్టింపు", "డోస్ పెంచ", "మోతాదు పెంచ", "డోస్ తగ్గించ", "మందు ఆప", "ఎక్కువ మందు"
 ]
 
 HARDCODED_EMERGENCY_RESPONSE = """🚨 **URGENT EMERGENCY GUIDANCE**

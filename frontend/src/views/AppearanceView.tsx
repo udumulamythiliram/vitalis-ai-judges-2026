@@ -19,6 +19,16 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
+import { useLanguage, translateStaticText } from '../i18n';
+
+const SURFACE_STYLES = [
+  { id: 'classic', label: 'theme.classic', description: 'theme.classicDesc' },
+  { id: 'neomorphism', label: 'theme.neo', description: 'theme.neoDesc' },
+  { id: 'glassmorphism', label: 'theme.glass', description: 'theme.glassDesc' },
+  { id: 'clay', label: 'theme.clay', description: 'theme.clayDesc' },
+  { id: 'crystal', label: 'theme.crystal', description: 'theme.crystalDesc' },
+  { id: 'pearl', label: 'theme.pearl', description: 'theme.pearlDesc' },
+] as const;
 
 interface AppearanceViewProps {
   settings: CustomThemeSettings;
@@ -29,6 +39,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
   settings,
   onUpdateSettings,
 }) => {
+  const { t } = useLanguage();
   const activePreset = THEME_PRESETS.find((p) => p.id === settings.presetId) || THEME_PRESETS[2];
 
   // Contrast Guard check
@@ -64,10 +75,10 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
         <div>
           <h2 className="text-xl font-bold text-text flex items-center space-x-2">
             <Palette className="w-5 h-5 text-primary" />
-            <span>Theme Studio & WCAG 2.2 Contrast Guard</span>
+            <span>{t('theme.title')}</span>
           </h2>
           <p className="text-xs text-text-muted mt-0.5">
-            12 curated clinical themes with live token crossfade, typography scaling, and WCAG AAA compliance enforcement.
+            {t('theme.subtitle')}
           </p>
         </div>
 
@@ -77,7 +88,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
             className="px-3 py-1.5 rounded-theme bg-surface-2 hover:bg-border text-text font-bold text-xs flex items-center space-x-1.5 border border-border"
           >
             <Download className="w-4 h-4" />
-            <span>Export Theme JSON</span>
+            <span>{t('theme.export')}</span>
           </button>
           <button
             onClick={() => {
@@ -85,7 +96,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
               applyTheme(DEFAULT_THEME_SETTINGS);
             }}
             className="p-1.5 rounded-theme hover:bg-surface-2 text-text-muted hover:text-text"
-            title="Reset theme defaults"
+            title={t('theme.reset')}
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -104,7 +115,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
           </div>
           <div>
             <div className="font-bold text-text text-sm flex items-center space-x-2">
-              <span>WCAG 2.2 AA Contrast Guard:</span>
+              <span>{t('theme.contrast')} {translateStaticText("(WCAG 2.2 AA):")}</span>
               <span
                 className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${
                   contrastCheck.aaaNormal
@@ -114,19 +125,19 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
                     : 'bg-red-100 text-red-800'
                 }`}
               >
-                Grade: {contrastCheck.grade} ({contrastCheck.ratio}:1)
+                {translateStaticText("Grade:")} {contrastCheck.grade} ({contrastCheck.ratio}:1)
               </span>
             </div>
             <p className="text-xs text-text-muted">
               {contrastCheck.aaNormal
-                ? 'Primary color satisfies WCAG minimum contrast ratio against current background.'
-                : 'Warning: Low contrast detected. Select a darker primary accent or enable High Contrast mode.'}
+                ? t('theme.contrastPass')
+                : t('theme.contrastWarn')}
             </p>
           </div>
         </div>
 
         <div className="flex items-center space-x-2">
-          <label className="text-xs font-semibold text-text-muted">Primary Accent Picker:</label>
+          <label className="text-xs font-semibold text-text-muted">{t('theme.accent')}:</label>
           <input
             type="color"
             value={settings.primaryColor || activePreset.primary}
@@ -136,9 +147,36 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
         </div>
       </div>
 
+      <section className="bg-surface rounded-theme p-5 border border-border shadow-theme" aria-labelledby="surface-styles-heading">
+        <div className="mb-4">
+          <h3 id="surface-styles-heading" className="font-bold text-base text-text">{t('theme.surfaceStyles')}</h3>
+          <p className="text-xs text-text-muted mt-1">{t('theme.surfaceDesc')}</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          {SURFACE_STYLES.map((style) => {
+            const selected = (settings.surfaceStyle || 'classic') === style.id;
+            return (
+              <button
+                key={style.id}
+                type="button"
+                onClick={() => handleUpdate({ surfaceStyle: style.id })}
+                aria-pressed={selected}
+                className={`text-left p-4 rounded-theme border transition-all ${selected ? 'border-primary ring-2 ring-primary' : 'border-border hover:border-primary/60'} bg-surface-2`}
+              >
+                <span className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-sm text-text">{t(style.label)}</span>
+                  {selected && <Check className="w-4 h-4 text-primary" aria-hidden="true" />}
+                </span>
+                <span className="block mt-1 text-xs text-text-muted">{t(style.description)}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* 12 Presets Grid */}
       <div className="bg-surface rounded-theme p-5 border border-border shadow-theme">
-        <h3 className="font-bold text-base text-text mb-4">12 Curated Theme Presets</h3>
+        <h3 className="font-bold text-base text-text mb-4">{t('theme.presets')}</h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {THEME_PRESETS.map((p) => {
@@ -166,7 +204,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
 
                 <div className="text-[10px] opacity-70 flex items-center space-x-1" style={{ color: p.textMuted }}>
                   {p.isDark ? <Moon className="w-3 h-3" /> : <Sun className="w-3 h-3" />}
-                  <span>{p.isDark ? 'Dark' : 'Light'}</span>
+                  <span>{p.isDark ? t('theme.dark') : t('theme.light')}</span>
                 </div>
               </button>
             );
@@ -180,12 +218,12 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
         <div className="bg-surface rounded-theme p-5 border border-border shadow-theme space-y-4">
           <h3 className="font-bold text-base text-text flex items-center space-x-2">
             <Type className="w-4 h-4 text-primary" />
-            <span>Typography & Spacing Controls</span>
+            <span>{t('theme.typography')}</span>
           </h3>
 
           <div>
             <div className="flex justify-between text-xs font-semibold text-text mb-1">
-              <span>Font Scale ({settings.fontScale}%)</span>
+              <span>{t('theme.fontScale')} ({settings.fontScale}%)</span>
               <span className="text-text-muted">80% - 200%</span>
             </div>
             <input
@@ -201,7 +239,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
 
           <div>
             <div className="flex justify-between text-xs font-semibold text-text mb-1">
-              <span>Line Height ({settings.lineHeight})</span>
+              <span>{t('theme.lineHeight')} ({settings.lineHeight})</span>
               <span className="text-text-muted">1.2 - 2.0</span>
             </div>
             <input
@@ -217,8 +255,8 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
 
           <div>
             <div className="flex justify-between text-xs font-semibold text-text mb-1">
-              <span>Card Border Radius ({settings.borderRadius}px)</span>
-              <span className="text-text-muted">0 - 24px</span>
+              <span>{t('theme.radius')} ({settings.borderRadius}{translateStaticText("px)")}</span>
+              <span className="text-text-muted">{translateStaticText("0 - 24px")}</span>
             </div>
             <input
               type="range"
@@ -236,11 +274,11 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
         <div className="bg-surface rounded-theme p-5 border border-border shadow-theme space-y-4">
           <h3 className="font-bold text-base text-text flex items-center space-x-2">
             <Layout className="w-4 h-4 text-primary" />
-            <span>Card Styling & Layout Density</span>
+            <span>{t('theme.cardStyle')} & {t('theme.layoutDensity')}</span>
           </h3>
 
           <div>
-            <label className="text-xs font-semibold text-text mb-2 block">Card Elevation Style:</label>
+            <label className="text-xs font-semibold text-text mb-2 block">{t('theme.cardStyle')}:</label>
             <div className="grid grid-cols-2 gap-2">
               {(['shadow', 'flat', 'outlined', 'glass'] as const).map((style) => (
                 <button
@@ -259,7 +297,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-text mb-2 block">Layout Density:</label>
+            <label className="text-xs font-semibold text-text mb-2 block">{t('theme.layoutDensity')}:</label>
             <div className="grid grid-cols-3 gap-2">
               {(['compact', 'normal', 'spacious'] as const).map((d) => (
                 <button
@@ -285,7 +323,7 @@ export const AppearanceView: React.FC<AppearanceViewProps> = ({
                 onChange={(e) => handleUpdate({ darkScheduleAfter7pm: e.target.checked })}
                 className="w-4 h-4 accent-primary"
               />
-              <span>Auto schedule: Switch to dark theme after 7:00 PM</span>
+              <span>{t('theme.autoDark')}</span>
             </label>
           </div>
         </div>

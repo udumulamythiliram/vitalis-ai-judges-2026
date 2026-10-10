@@ -47,6 +47,112 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[lang='hi'] body {
+  font-family: 'Noto Sans Devanagari', Inter, sans-serif;
+}
+
+:root[lang='te'] body {
+  font-family: 'Noto Sans Telugu', Inter, sans-serif;
+}
+
+/* Material presets apply to the shared surface tokens across the whole app. */
+:root[data-surface-style='neomorphism'] .bg-surface,
+:root[data-surface-style='neomorphism'] [class*='bg-surface-'],
+:root[data-surface-style='neomorphism'] [class*='bg-surface/'] {
+  background-color: var(--bg) !important;
+  border-color: transparent !important;
+  box-shadow: 8px 8px 18px color-mix(in srgb, var(--text) 12%, transparent),
+    -8px -8px 18px color-mix(in srgb, var(--surface) 86%, white) !important;
+}
+
+:root[data-surface-style='glassmorphism'] body {
+  background-image: radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--primary) 24%, transparent), transparent 48%),
+    radial-gradient(ellipse at 85% 25%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 44%),
+    linear-gradient(135deg, var(--bg), color-mix(in srgb, var(--secondary) 8%, var(--bg)));
+  background-attachment: fixed;
+}
+
+:root[data-surface-style='glassmorphism'] .bg-surface,
+:root[data-surface-style='glassmorphism'] [class*='bg-surface-'],
+:root[data-surface-style='glassmorphism'] [class*='bg-surface/'] {
+  background-color: color-mix(in srgb, var(--surface) 70%, transparent) !important;
+  border-color: color-mix(in srgb, var(--surface) 68%, var(--primary)) !important;
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--text) 10%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 58%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+
+:root[data-surface-style='clay'] .bg-surface,
+:root[data-surface-style='clay'] [class*='bg-surface-'],
+:root[data-surface-style='clay'] [class*='bg-surface/'] {
+  background-color: var(--surface) !important;
+  border-color: color-mix(in srgb, var(--surface) 72%, var(--primary)) !important;
+  border-radius: max(var(--radius), 18px);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--text) 12%, transparent),
+    0 3px 7px color-mix(in srgb, var(--text) 8%, transparent),
+    inset 0 2px 2px color-mix(in srgb, white 66%, transparent) !important;
+}
+
+:root[data-surface-style='crystal'] body {
+  background-image: radial-gradient(ellipse at 10% 12%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%),
+    radial-gradient(ellipse at 90% 18%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 40%);
+  background-attachment: fixed;
+}
+
+:root[data-surface-style='crystal'] .bg-surface,
+:root[data-surface-style='crystal'] [class*='bg-surface-'],
+:root[data-surface-style='crystal'] [class*='bg-surface/'] {
+  background: linear-gradient(145deg, color-mix(in srgb, white 36%, transparent), transparent 48%),
+    color-mix(in srgb, var(--surface) 82%, var(--accent)) !important;
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border)) !important;
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--text) 11%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 65%, transparent) !important;
+  backdrop-filter: blur(12px) saturate(135%);
+  -webkit-backdrop-filter: blur(12px) saturate(135%);
+}
+
+:root[data-surface-style='pearl'] body {
+  background-image: radial-gradient(ellipse at 15% 12%, color-mix(in srgb, #f0abfc 25%, transparent), transparent 43%),
+    radial-gradient(ellipse at 85% 24%, color-mix(in srgb, #67e8f9 22%, transparent), transparent 43%),
+    linear-gradient(140deg, var(--bg), color-mix(in srgb, #fde68a 10%, var(--bg)));
+  background-attachment: fixed;
+}
+
+:root[data-surface-style='pearl'] .bg-surface,
+:root[data-surface-style='pearl'] [class*='bg-surface-'],
+:root[data-surface-style='pearl'] [class*='bg-surface/'] {
+  background: linear-gradient(135deg, color-mix(in srgb, white 92%, var(--surface)) 0%,
+    color-mix(in srgb, #f5d0fe 26%, var(--surface)) 48%,
+    color-mix(in srgb, #a5f3fc 24%, var(--surface)) 100%) !important;
+  border-color: color-mix(in srgb, #c4b5fd 38%, var(--border)) !important;
+  box-shadow: 0 12px 28px color-mix(in srgb, #64748b 13%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 82%, transparent) !important;
+}
+
+/* Keep the accessibility contrast override stronger than decorative material effects. */
+:root.high-contrast[data-surface-style] .bg-surface,
+:root.high-contrast[data-surface-style] [class*='bg-surface-'],
+:root.high-contrast[data-surface-style] [class*='bg-surface/'] {
+  background: var(--surface) !important;
+  border: 1px solid var(--text) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-surface-style] *,
+  :root[data-surface-style] *::before,
+  :root[data-surface-style] *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 /* Accessibility Modes */
 .dyslexia-font {
   font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PatientProfile, ChatMessage } from '../types';
 import { api } from '../api';
+import { useLanguage } from '../i18n';
 import {
   Bot,
   X,
@@ -27,6 +28,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
   onOpenDocument,
   elderlyMode = false,
 }) => {
+  const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -43,13 +45,13 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
         {
           id: 'welcome_msg',
           role: 'assistant',
-          content: `Hello! I am Vitalis Copilot, personalized for **${activePatient.full_name}**. Upload any prescription or test report, or ask me anything grounded in your records.`,
+          content: t('copilot.welcome', { name: activePatient.full_name }),
           created_at: new Date().toISOString(),
           sources: []
         }
       ]);
     }
-  }, [activePatient]);
+  }, [activePatient, language, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -76,7 +78,8 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
       const resp = await api.sendMessage({
         patient_id: activePatient.id,
         message: textToSend,
-        conversation_id: conversationId || undefined
+        conversation_id: conversationId || undefined,
+        language,
       });
 
       if (resp.conversation_id) setConversationId(resp.conversation_id);
@@ -97,7 +100,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
         {
           id: `err_${Date.now()}`,
           role: 'assistant',
-          content: 'Unable to reach the assistant. Please verify your connection or check system status.',
+          content: t('copilot.error'),
           created_at: new Date().toISOString()
         }
       ]);
@@ -112,6 +115,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text.replace(/[#*_`]/g, ''));
       utterance.rate = elderlyMode ? 0.85 : 1.0;
+      utterance.lang = language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-IN';
       window.speechSynthesis.speak(utterance);
     }
   };
@@ -120,7 +124,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
   const handleToggleVoice = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser. Please use keyboard input.');
+      alert(t('copilot.voiceUnsupported'));
       return;
     }
 
@@ -130,7 +134,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
+    recognition.lang = language === 'hi' ? 'hi-IN' : language === 'te' ? 'te-IN' : 'en-IN';
     recognition.interimResults = false;
     recognition.onstart = () => setIsRecording(true);
     recognition.onend = () => setIsRecording(false);
@@ -158,11 +162,11 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
           className={`fixed bottom-6 right-6 z-40 bg-primary hover:bg-primary-hover text-primary-contrast rounded-full shadow-2xl flex items-center space-x-2 transition-all transform hover:scale-105 ${
             elderlyMode ? 'p-5 text-lg' : 'p-4'
           }`}
-          title="Ask Vitalis Copilot"
-          aria-label="Open Vitalis Copilot"
+          title={t('copilot.trigger')}
+          aria-label={t('copilot.trigger')}
         >
           <Bot className={elderlyMode ? 'w-8 h-8' : 'w-6 h-6'} />
-          <span className="font-bold hidden sm:inline">Ask Vitalis</span>
+          <span className="font-bold hidden sm:inline">{t('copilot.trigger')}</span>
         </button>
       )}
 
@@ -170,7 +174,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
       {isOpen && (
         <div
           role="complementary"
-          aria-label="Vitalis Copilot Assistant"
+          aria-label={t('copilot.title')}
           className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-[95vw] sm:w-[450px] h-[600px] max-h-[85vh] bg-surface border-2 border-border rounded-theme shadow-2xl z-50 flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
         >
           {/* Header */}
@@ -180,16 +184,16 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
                 <Bot className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-bold text-sm text-text">Vitalis Copilot</div>
+                <div className="font-bold text-sm text-text">{t('copilot.title')}</div>
                 <div className="text-xs text-text-muted truncate max-w-[200px]">
-                  Patient: {activePatient?.full_name}
+                  {t('copilot.patient')}: {activePatient?.full_name}
                 </div>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1.5 rounded-full hover:bg-border text-text-muted hover:text-text transition-colors"
-              aria-label="Close Copilot"
+              aria-label={t('copilot.close')}
             >
               <X className="w-5 h-5" />
             </button>
@@ -218,7 +222,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
                       <div className="mt-3 pt-2 border-t border-border/50 text-xs">
                         <div className="font-semibold text-text-muted mb-1 flex items-center space-x-1">
                           <FileText className="w-3.5 h-3.5" />
-                          <span>Sources Grounded in Records:</span>
+                          <span>{t('copilot.sourcesGrounded')}:</span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {m.sources.map((s, idx) => (
@@ -243,22 +247,22 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
                       <button
                         onClick={() => handleReadAloud(m.content)}
                         className="p-1 hover:text-text flex items-center space-x-1"
-                        title="Read aloud"
+                        title={t('copilot.readAloud')}
                       >
                         <Volume2 className="w-3.5 h-3.5" />
-                        <span>Read</span>
+                        <span>{t('copilot.read')}</span>
                       </button>
                       <button
                         onClick={() => handleCopy(m.id, m.content)}
                         className="p-1 hover:text-text flex items-center space-x-1"
-                        title="Copy message"
+                        title={t('copilot.copy')}
                       >
                         {copiedId === m.id ? (
                           <Check className="w-3.5 h-3.5 text-success" />
                         ) : (
                           <Copy className="w-3.5 h-3.5" />
                         )}
-                        <span>{copiedId === m.id ? 'Copied' : 'Copy'}</span>
+                        <span>{copiedId === m.id ? t('copilot.copied') : t('copilot.copy')}</span>
                       </button>
                     </div>
                   )}
@@ -269,7 +273,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
             {isLoading && (
               <div className="flex items-center space-x-2 text-text-muted text-xs p-2">
                 <RefreshCw className="w-4 h-4 animate-spin text-primary" />
-                <span>Vitalis is analyzing your records...</span>
+                <span>{t('copilot.loading')}</span>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -281,25 +285,25 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
               onClick={() => handleSend('Explain my latest blood test simply')}
               className="px-2 py-1 rounded-full bg-surface border border-border hover:border-primary text-text-muted hover:text-primary transition-colors"
             >
-              Explain blood test
+              {t('copilot.quickBlood')}
             </button>
             <button
               onClick={() => handleSend('Explain this in Telugu (తెలుగు)')}
               className="px-2 py-1 rounded-full bg-surface border border-border hover:border-primary text-text-muted hover:text-primary transition-colors"
             >
-              తెలుగు (Telugu)
+              {t('copilot.quickTelugu')}
             </button>
             <button
               onClick={() => handleSend('Explain this in Hindi (हिन्दी)')}
               className="px-2 py-1 rounded-full bg-surface border border-border hover:border-primary text-text-muted hover:text-primary transition-colors"
             >
-              हिन्दी (Hindi)
+              {t('copilot.quickHindi')}
             </button>
             <button
               onClick={() => handleSend('What questions should I ask my doctor?')}
               className="px-2 py-1 rounded-full bg-surface border border-border hover:border-primary text-text-muted hover:text-primary transition-colors"
             >
-              Doctor questions
+              {t('copilot.doctorQuestions')}
             </button>
           </div>
 
@@ -312,14 +316,14 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
                   ? 'bg-red-500 text-white animate-pulse'
                   : 'text-text-muted hover:bg-surface-2 hover:text-text'
               }`}
-              title={isRecording ? 'Listening...' : 'Voice dictation'}
+              title={isRecording ? t('copilot.listening') : t('copilot.voiceInput')}
             >
               {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
             </button>
 
             <input
               type="text"
-              placeholder={elderlyMode ? 'Type or speak question...' : 'Ask about your medications or lab tests...'}
+              placeholder={t('copilot.placeholder')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -330,7 +334,7 @@ export const FloatingCopilot: React.FC<FloatingCopilotProps> = ({
               onClick={() => handleSend()}
               disabled={isLoading || !input.trim()}
               className="p-2 rounded-theme bg-primary hover:bg-primary-hover disabled:opacity-40 text-primary-contrast transition-colors"
-              aria-label="Send message"
+              aria-label={t('copilot.send')}
             >
               <Send className="w-5 h-5" />
             </button>

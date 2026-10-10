@@ -28,8 +28,10 @@ import { PrivacyView } from './views/PrivacyView';
 import { AiQualityView } from './views/AiQualityView';
 import { DemoView } from './views/DemoView';
 import { HelpView } from './views/HelpView';
+import { useLanguage } from './i18n';
 
 export function App() {
+  const { t } = useLanguage();
   const [themeSettings, setThemeSettings] = useState<CustomThemeSettings>(loadSavedThemeSettings());
   const [patients, setPatients] = useState<PatientProfile[]>([]);
   const [activePatient, setActivePatient] = useState<PatientProfile | null>(null);
@@ -133,8 +135,8 @@ export function App() {
         <main id="main-content" className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto min-h-[calc(100vh-4rem)]">
           {import.meta.env.VITE_PUBLIC_DEMO === 'true' && (
             <div role="note" className="mb-6 rounded-theme border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
-              <strong>Public judge demo · fictional or de-identified data only.</strong>{' '}
-              All visitors use shared sample profiles, so changes and demo chats may be visible to others and can reset. Uploaded previews are processed for the request and not saved by Vitalis. If you add your own AI key, the key and the text you submit are forwarded to your selected provider. Do not use real patient records or personal information.
+              <strong>{t('public.title')}</strong>{' '}
+              {t('public.body')}
             </div>
           )}
 
